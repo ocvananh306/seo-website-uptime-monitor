@@ -1,0 +1,26 @@
+name: Daily Website Uptime & 5xx Check
+
+on:
+  schedule:
+    # Chạy vào 02:00 UTC mỗi ngày = 09:00 sáng giờ Việt Nam (GMT+7)
+    - cron: '0 2 * * *'
+  # Cho phép bấm nút chạy thủ công bất cứ lúc nào để test
+  workflow_dispatch:
+
+jobs:
+  check-websites:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Website Uptime Check
+        env:
+          LARK_WEBHOOK_URL: ${{ secrets.LARK_WEBHOOK_URL }}
+        run: python check_websites.py
